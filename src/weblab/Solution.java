@@ -102,16 +102,49 @@ class Solution {
     return list ;
   }
 
-  private static void getSortedKeys(MWSTNode root, List<Integer> list) {
 
-    if(root ==null){
-      return ;
+  private static void getSortedKeys(MWSTNode node, List<Integer> list){
+    if(node==null || node.getChildren()==null|| node.getChildren().size()==0){
+      return;
     }
-    list.addAll(root.getKeys());
 
+    int index = 0;
+    int childIndex = 0 ;
 
-    for(MWSTNode node : root.getChildren()){
-      getSortedKeys(node, list);
+    List<Integer> keys = node.getKeys();
+    LinkedList<MWSTNode> children = node.getChildren();
+
+    while(childIndex <children.size() || index <keys.size()){
+      while(childIndex <children.size()){
+        if(children.get(childIndex)==null){
+          childIndex++;
+        }else{
+          break;
+        }
+      }
+
+      while(childIndex < children.size() && index <keys.size()){
+
+        MWSTNode child = children.get(childIndex);
+
+        if(child !=null && (child.getKeys().get(child.getKeys().size()-1) < keys.get(index))){
+          getSortedKeys(child,list);
+          childIndex++;
+        }else{
+          list.add(keys.get(index));
+          index++;
+        }
+      }
+
+      while(childIndex <children.size()){
+        getSortedKeys(children.get(childIndex), list);
+        childIndex++;
+      }
+
+      while(index<keys.size()){
+        list.add(keys.get(index));
+        index++;
+      }
     }
 
   }
